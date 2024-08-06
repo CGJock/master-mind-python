@@ -34,6 +34,7 @@ class Decripting():
   def __init__(self, player_input: list, cpu_input: list, word_guess: list, attemp: int, map_instance) -> None:
     coded_word = []
     for letter in range(len(word_guess)):
+      print(f"esto es un objeto que llamo{player_input}")
       if player_input[letter] == word_guess[letter]:
         coded_word.append(player_input[letter])
       elif player_input[letter] in word_guess:
@@ -52,33 +53,43 @@ class PlayerElection():
       
     
 class CpuElection():
-  def __init__(self,cpu_input) -> None:
-    self.cpu = cpu_input.split()
+  def __init__(self) -> None:
+    self.cpu = []
     
   def cpu_brute(self, palabras: list):
     index = random.randint(0,25)
     self.cpu = list(palabras[index])
+    return self.cpu
     
   def cpu_random(self):
     for index in range(6):
       self.cpu[index] = chr(random.randint(ord('a'), ord('z')))
+      return self.cpu
   
-  def cpu_algorithm(self,word_guess):
-    self.cpu = "aceron"
+  # def cpu_algorithm(self,word_guess):
+  #   self.cpu = "aceron"
     
-    for i in range(6):
-      if self.cpu[i] == word_guess[i]:
-        self.cpu[i] = word_guess[i]
-      elif
-        pass
+  #   for i in range(6):
+  #     if self.cpu[i] == word_guess[i]:
+  #       self.cpu[i] = word_guess[i]
+  #     elif self.cpu[i] in word_guess[i]:
+  #       pass
+
+
+    num = random.randint(0,2)
+    if num == 0:
+      self.cpu = CpuElection.cpu_brute()
+      print(self.cpu)
+    elif num == 1:
+      self.cpu = CpuElection.cpu_random()
+      print(self.cpu)
+      
+    return self.cpu
+      
      
     
   
     
-      
-      
-  
-
 class WordToGuess():
   def __init__(self,palabras: list) -> None:
     index = random.randint(0,25)
@@ -94,9 +105,9 @@ class Game():
       self.run = True
       self.map_instance = Mapa()
       game_mode = input("""Seleccione el modo de juego: 
-                          'Adivinar' para adivinar la palabra:
-                          'Master' para proponer palabra a adivinar:""")
-      if game_mode.lower() == "adivinar":
+                          '1' para adivinar la palabra:
+                          '2' para proponer palabra a adivinar:""")
+      if game_mode.lower() == "1":
         instance_word_gues = WordToGuess(self.dict_game.palabras)
         word_guess = instance_word_gues.word_guess
         while self.attemp < 12:
@@ -104,6 +115,15 @@ class Game():
           Decripting(player_input=player_input,word_guess=word_guess, cpu_input=None,attemp = self.attemp,map_instance = self.map_instance)
           self.attemp += 1
           if self.attemp == 12:
+            exit()
+            
+      elif game_mode.lower() == '2':
+        player_input = list(input("Digite la palabra que quiere que se adivine: "))
+        word_guess = player_input
+        while self.attemp < 12:
+          Decripting(word_guess=player_input,attemp=self.attemp,map_instance = self.map_instance,player_input=CpuElection(),cpu_input=None)
+          self.attemp += 1
+          if self.attemp ==12:
             exit()
               
              
