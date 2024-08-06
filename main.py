@@ -36,10 +36,9 @@ class Mapa():
  
     
 class Decripting():
-  def __init__(self, player_input: list, cpu_input: list, word_guess: list, attemp: int) -> None:
+  def __init__(self, player_input: list, cpu_input: list, word_guess: list, attemp: int, map_instance) -> None:
     coded_word = []
     
-    map_instance = Mapa()
     
     for letter in range(len(word_guess)):
       if player_input[letter] == word_guess[letter]:
@@ -78,6 +77,7 @@ class Game():
       self.dict_game = DictGame()
       self.attemp = 0
       self.run = True
+      self.map_instance = Mapa()
       game_mode = input("""Seleccione el modo de juego: 
                           'Adivinar' para adivinar la palabra:
                           'Master' para proponer palabra a adivinar:""")
@@ -86,7 +86,7 @@ class Game():
         word_guess = instance_word_gues.word_guess
         while self.attemp < 12:
           player_input = list(input("guess the word: "))
-          self.Decripting(player_input=player_input,word_guess=word_guess, cpu_input=None,attemp = self.attemp)
+          Decripting(player_input=player_input,word_guess=word_guess, cpu_input=None,attemp = self.attemp,map_instance = self.map_instance)
           self.attemp += 1
           if self.attemp == 12:
             exit()
