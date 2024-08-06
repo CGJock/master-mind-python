@@ -1,5 +1,6 @@
 import random
 import colorise
+import string
 
 class DictGame():
     def __init__(self) -> None:
@@ -18,19 +19,13 @@ class Mapa():
         
   
   def print_mapa(self):
-    # for j in range(len(player_input)):
-    # for element in player_input:
-      # print(f'print de prueba{self.map[attemp]}')
-      
-      # self.guesses_grid[attemp] = player_input
-      # for row in self.guesses_grid:
-      #   print("".join(map(str,row)))
+  
       for guesses_grid, feedback_grid in zip(self.guesses_grid, self.feedback_grid):
             # Convirtiendo cada elemento de ambas filas a string
-            fila_tablero_str = "  ".join(map(str, guesses_grid))
-            fila_ayuda_str = "  ".join(map(str, feedback_grid))
+            row_map_str = "  ".join(map(str, guesses_grid))
+            row_guess_str = "  ".join(map(str, feedback_grid))
             # Imprimiendo la fila combinada
-            print(f"|  {fila_tablero_str}  |  {fila_ayuda_str}  |")
+            print(f"|  {row_map_str}  |  {row_guess_str}  |")
     
       
  
@@ -38,8 +33,6 @@ class Mapa():
 class Decripting():
   def __init__(self, player_input: list, cpu_input: list, word_guess: list, attemp: int, map_instance) -> None:
     coded_word = []
-    
-    
     for letter in range(len(word_guess)):
       if player_input[letter] == word_guess[letter]:
         coded_word.append(player_input[letter])
@@ -59,9 +52,31 @@ class PlayerElection():
       
     
 class CpuElection():
-  def __init__(self,) -> None:
-    self.cpu 
-    pass
+  def __init__(self,cpu_input) -> None:
+    self.cpu = cpu_input.split()
+    
+  def cpu_brute(self, palabras: list):
+    index = random.randint(0,25)
+    self.cpu = list(palabras[index])
+    
+  def cpu_random(self):
+    for index in range(6):
+      self.cpu[index] = chr(random.randint(ord('a'), ord('z')))
+  
+  def cpu_algorithm(self,word_guess):
+    self.cpu = "aceron"
+    
+    for i in range(6):
+      if self.cpu[i] == word_guess[i]:
+        self.cpu[i] = word_guess[i]
+      elif
+        pass
+     
+    
+  
+    
+      
+      
   
 
 class WordToGuess():
