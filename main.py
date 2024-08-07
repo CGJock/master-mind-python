@@ -31,10 +31,10 @@ class Mapa():
  
     
 class Decripting():
-  def __init__(self, player_input: list, cpu_input: list, word_guess: list, attemp: int, map_instance) -> None:
+  def __init__(self, player_input: list,  word_guess: list, attemp: int, map_instance) -> None:
     coded_word = []
+    print(f"palabra a adivinar{word_guess}")
     for letter in range(len(word_guess)):
-      print(f"esto es un objeto que llamo{player_input}")
       if player_input[letter] == word_guess[letter]:
         coded_word.append(player_input[letter])
       elif player_input[letter] in word_guess:
@@ -54,17 +54,18 @@ class PlayerElection():
     
 class CpuElection():
   def __init__(self) -> None:
-    self.cpu = []
+    self.cpu = [None] *6 #se le da un valor predeterminado de 6 a la lista
     
   def cpu_brute(self, palabras: list):
-    index = random.randint(0,25)
+    print("estoy usando metodo brute")
+    index = random.randint(0,len(palabras) -1)
     self.cpu = list(palabras[index])
     return self.cpu
     
   def cpu_random(self):
-    for index in range(6):
-      self.cpu[index] = chr(random.randint(ord('a'), ord('z')))
-      return self.cpu
+    print("estoy usando meodo random")
+    self.cpu = [chr(random.randint(ord('a'),ord('z'))) for _ in range(6)]
+    return self.cpu
   
   # def cpu_algorithm(self,word_guess):
   #   self.cpu = "aceron"
@@ -76,15 +77,15 @@ class CpuElection():
   #       pass
 
 
-    num = random.randint(0,2)
-    if num == 0:
-      self.cpu = CpuElection.cpu_brute()
-      print(self.cpu)
-    elif num == 1:
-      self.cpu = CpuElection.cpu_random()
-      print(self.cpu)
+  # def cpu_decide(self, palabras,attemp):
+  #     num = random.randint(0,1)
+  #     if num == 0:
+  #         return self.cpu_brute(palabras)
       
-    return self.cpu
+  #     elif num == 1:
+  #         return self.cpu_random()
+      
+  #     return self.cpu
       
      
     
@@ -112,18 +113,27 @@ class Game():
         word_guess = instance_word_gues.word_guess
         while self.attemp < 12:
           player_input = list(input("guess the word: "))
-          Decripting(player_input=player_input,word_guess=word_guess, cpu_input=None,attemp = self.attemp,map_instance = self.map_instance)
+          Decripting(player_input=player_input,word_guess=word_guess,attemp = self.attemp,map_instance = self.map_instance)
           self.attemp += 1
+          if player_input == word_guess:
+            print("Ganaste, palabra adivinada")
+            exit()
           if self.attemp == 12:
+            print("Llegaste al limite de turnos GAMEOVER")
             exit()
             
       elif game_mode.lower() == '2':
         player_input = list(input("Digite la palabra que quiere que se adivine: "))
         word_guess = player_input
+        cpu_election = CpuElection()
+        choosen_method = random.choice([lambda palabras: cpu_election.cpu_brute(self.dict_game.palabras),
+                                        lambda palabras: cpu_election.cpu_random()])
         while self.attemp < 12:
-          Decripting(word_guess=player_input,attemp=self.attemp,map_instance = self.map_instance,player_input=CpuElection(),cpu_input=None)
+          cpu_input = choosen_method(self.dict_game.palabras)
+          Decripting(word_guess=player_input,attemp=self.attemp,map_instance = self.map_instance,player_input=cpu_input)
           self.attemp += 1
-          if self.attemp ==12:
+          if self.attemp == 12 or word_guess == player_input:
+            print("juego terminado")
             exit()
               
              
