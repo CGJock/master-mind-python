@@ -34,6 +34,7 @@ class Decripting():
   def __init__(self, player_input: list,  word_guess: list, attemp: int, map_instance) -> None:
     coded_word = []
     print(f"palabra a adivinar{word_guess}")
+    print(f"player input o aperon = {player_input}")
     for letter in range(len(word_guess)):
       if player_input[letter] == word_guess[letter]:
         green = colored(player_input[letter],'green')
@@ -50,6 +51,7 @@ class Decripting():
     
     
     
+    
 class PlayerElection():
     def __init__(self,player_input) -> None:
       self.player = player_input.split()
@@ -63,6 +65,7 @@ class CpuElection():
     print("estoy usando metodo brute")
     index = random.randint(0,len(palabras) -1)
     self.cpu = list(palabras[index])
+    palabras.pop(index)
     return self.cpu
     
   def cpu_random(self):
@@ -70,29 +73,42 @@ class CpuElection():
     self.cpu = [chr(random.randint(ord('a'),ord('z'))) for _ in range(6)]
     return self.cpu
   
-  # def cpu_algorithm(self,word_guess):
-  #   self.cpu = "aceron"
+  def cpu_algorithm(self,word_guess,attemp):
+    print("usando el metodo algoritmo")
+    self.index = random.choice([0,1,2,3,4,5])
+    self.cpu  = ['a','p','e','r','o','n']
     
-  #   for i in range(6):
-  #     if self.cpu[i] == word_guess[i]:
-  #       self.cpu[i] = word_guess[i]
-  #     elif self.cpu[i] in word_guess[i]:
-  #       pass
+    if attemp == 0:
+      print(f"esto es attemp {attemp}")
+      self.cpu = ('a','p','e','r','o','n')
+      return self.cpu
+    else:
+      for i in range(len(self.cpu)):
+        print(f" esto es self.cpu{self.cpu}")
+        print(f" palabra a decifrar{word_guess} palabra que decifa{self.cpu}")
+        # if word_guess[i] in self.cpu[i]:
+        #   self.cpu[self.index].append(word_guess[i])
+        # if self.cpu[i] == word_guess[i]:
+        #   self.cpu[i] = word_guess[i]
+        #   print(f"ESTO ES EL INDICE{[i]}")
+        #   self.index.pop(i)
+        # elif self.cpu[i] == word_guess[i]:
+        #   self.cpu[i] = word_guess[i]
+        # else:
+        #   self.cpu[i] not in word_guess[i]
+        #   self.cpu = [chr(random.randint(ord('a'),ord('z'))) for _ in range(6)]
+        for letter in word_guess:
+          if self.cpu[letter] == word_guess[letter]:
+            self.cpu[letter] = word_guess[letter]
+            self.index.pop(i)
+          elif self.cpu[letter] in word_guess[letter]:
+            self.cpu[self.index].append(word_guess[letter])
+          elif self.cpu[letter] not in word_guess[letter]:
+            self.cpu = [chr(random.randint(ord('a'),ord('z'))) for _ in range(6)]
+            
+      return self.cpu
 
 
-  # def cpu_decide(self, palabras,attemp):
-  #     num = random.randint(0,1)
-  #     if num == 0:
-  #         return self.cpu_brute(palabras)
-      
-  #     elif num == 1:
-  #         return self.cpu_random()
-      
-  #     return self.cpu
-      
-     
-    
-  
     
 class WordToGuess():
   def __init__(self,palabras: list) -> None:
@@ -130,12 +146,13 @@ class Game():
         word_guess = player_input
         cpu_election = CpuElection()
         choosen_method = random.choice([lambda palabras: cpu_election.cpu_brute(self.dict_game.palabras),
-                                        lambda palabras: cpu_election.cpu_random()])
+                                        lambda palabras: cpu_election.cpu_random(),
+                                        lambda palabras:  cpu_election.cpu_algorithm(word_guess,self.attemp)])
         while self.attemp < 12:
           cpu_input = choosen_method(self.dict_game.palabras)
           Decripting(word_guess=player_input,attemp=self.attemp,map_instance = self.map_instance,player_input=cpu_input)
           self.attemp += 1
-          if self.attemp == 12 or word_guess == player_input:
+          if self.attemp == 12 or word_guess == cpu_input:
             print("juego terminado")
             exit()
               
