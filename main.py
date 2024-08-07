@@ -1,5 +1,5 @@
 import random
-import colorise
+from termcolor import colored
 import string
 
 class DictGame():
@@ -36,11 +36,14 @@ class Decripting():
     print(f"palabra a adivinar{word_guess}")
     for letter in range(len(word_guess)):
       if player_input[letter] == word_guess[letter]:
-        coded_word.append(player_input[letter])
+        green = colored(player_input[letter],'green')
+        coded_word.append(green) 
       elif player_input[letter] in word_guess:
-        coded_word.append("?")
+        yellow = colored(player_input[letter],'yellow')
+        coded_word.append(yellow) 
       elif player_input[letter] not in word_guess:
-        coded_word.append("X")
+        red = colored(player_input[letter], 'red')
+        coded_word.append(red)
     print(coded_word)
     map_instance.add_arrays(coded_word=coded_word,player_input=player_input, attemp=attemp)
     map_instance.print_mapa()
