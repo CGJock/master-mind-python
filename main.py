@@ -1,6 +1,6 @@
 import random
 from termcolor import colored
-import string
+import time
 
 class DictGame():
     def __init__(self) -> None:
@@ -58,8 +58,11 @@ class PlayerElection():
       
     
 class CpuElection():
-  def __init__(self) -> None:
+  def __init__(self,feedback_grid) -> None:
     self.cpu = [None] *6 #se le da un valor predeterminado de 6 a la lista
+    self.correct_positions = [None] *6
+    self.letters_in_word =  set()
+    self.feedback_grid = feedback_grid 
     
   def cpu_brute(self, palabras: list):
     print("estoy usando metodo brute")
@@ -73,43 +76,49 @@ class CpuElection():
     self.cpu = [chr(random.randint(ord('a'),ord('z'))) for _ in range(6)]
     return self.cpu
   
-  def cpu_algorithm(self,word_guess,attemp):
+  def cpu_algorithm(self,word_guess,attemp,):
     print("usando el metodo algoritmo")
     self.index = random.choice([0,1,2,3,4,5])
     self.cpu  = ['a','p','e','r','o','n']
     
+    
     if attemp == 0:
       print(f"esto es attemp {attemp}")
-      self.cpu = ('a','p','e','r','o','n')
+      self.cpu = ['a','p','e','r','o','n']
       return self.cpu
-    else:
-      for i in range(len(self.cpu)):
-        print(f" esto es self.cpu{self.cpu}")
-        print(f" palabra a decifrar{word_guess} palabra que decifa{self.cpu}")
-        # if word_guess[i] in self.cpu[i]:
-        #   self.cpu[self.index].append(word_guess[i])
-        # if self.cpu[i] == word_guess[i]:
-        #   self.cpu[i] = word_guess[i]
-        #   print(f"ESTO ES EL INDICE{[i]}")
-        #   self.index.pop(i)
-        # elif self.cpu[i] == word_guess[i]:
-        #   self.cpu[i] = word_guess[i]
-        # else:
-        #   self.cpu[i] not in word_guess[i]
-        #   self.cpu = [chr(random.randint(ord('a'),ord('z'))) for _ in range(6)]
-        for letter in word_guess:
-          if self.cpu[letter] == word_guess[letter]:
-            self.cpu[letter] = word_guess[letter]
-            self.index.pop(i)
-          elif self.cpu[letter] in word_guess[letter]:
-            self.cpu[self.index].append(word_guess[letter])
-          elif self.cpu[letter] not in word_guess[letter]:
-            self.cpu = [chr(random.randint(ord('a'),ord('z'))) for _ in range(6)]
-            
-      return self.cpu
-
-
     
+    if attemp > 0:
+      previous_feedback = self.feedback_grid[attemp-1]
+      for i in range(len(word_guess)):
+        if previous_feedback[i] == colored(word_guess[i],'green'):
+          self.correct_positions[i] = word_guess[i]
+          self.letters_in_word.add(word_guess[i])
+        elif previous_feedback[i] == colored(word_guess[i],'yellow'):
+          self.letters_in_word.add(word_guess[i])
+        elif previous_feedback[i] == colored(word_guess[i],'red'):
+          self.letters_in_word.remove(word_guess[i])
+    new_guess = self.cpu.copy()
+   
+      
+    for i in range(len(word_guess)):
+      if self.correct_positions[i] is not None:
+        new_guess[i] = self.correct_positions[i]
+      elif new_guess[i] in self.letters_in_word:
+        for j in range(len(word_guess)):
+          if new_guess[j] is None and new_guess[j] != word_guess[j]:
+            new_guess[j] = new_guess[i]
+            break
+          
+      else:
+        new_guess[i] = chr(random.randint(ord('a'), ord('z')))
+        
+        
+            
+    self.cpu = new_guess
+    return self.cpu
+     
+            
+            
 class WordToGuess():
   def __init__(self,palabras: list) -> None:
     index = random.randint(0,25)
@@ -144,11 +153,13 @@ class Game():
       elif game_mode.lower() == '2':
         player_input = list(input("Digite la palabra que quiere que se adivine: "))
         word_guess = player_input
-        cpu_election = CpuElection()
+        cpu_election = CpuElection(self.map_instance.feedback_grid)
         choosen_method = random.choice([lambda palabras: cpu_election.cpu_brute(self.dict_game.palabras),
                                         lambda palabras: cpu_election.cpu_random(),
                                         lambda palabras:  cpu_election.cpu_algorithm(word_guess,self.attemp)])
         while self.attemp < 12:
+          print("Cpu thinking....")
+          time.sleep(1.5)
           cpu_input = choosen_method(self.dict_game.palabras)
           Decripting(word_guess=player_input,attemp=self.attemp,map_instance = self.map_instance,player_input=cpu_input)
           self.attemp += 1
@@ -157,22 +168,6 @@ class Game():
             exit()
               
              
-            
-        
  
 Game()       
-
-    
-   
-   
-
-
-
-    
-  
-
-# word_guess= list(input("word to decode"))
-# word_guess= list(input("word to decode"))
-# cpu_input = list("cacaos")
-
 
