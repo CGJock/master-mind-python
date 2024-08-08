@@ -3,6 +3,7 @@ from termcolor import colored
 import time
 
 class DictGame():
+  #banco de palabras para el brute y escoger la palabra a adivinar
     def __init__(self) -> None:
       self.palabras = ["amable","bonito","correr","dorado","felino","grande","habito", "jovial","kilito","lugare", "maduro","morado","oceano", "planta",
         "quinto","rubato","sereno","tierra","unidad","viajar","yeguar","zumban","alamos","besito","ceniza"]
@@ -10,6 +11,7 @@ class DictGame():
 
 class Mapa():
   def __init__(self) -> None:
+    #instancias para hacer los prints en la consola
     self.guesses_grid = [['🌫️','🌫️','🌫️','🌫️','🌫️','🌫️'] for _ in range(12)]
     self.feedback_grid = [['🌫️','🌫️','🌫️','🌫️','🌫️','🌫️']for _ in range(12)]
     
@@ -29,12 +31,11 @@ class Mapa():
     
       
  
-    
+  #clase que controla la logica del juego y como seran mostrados los colores en consola 
 class Decripting():
   def __init__(self, player_input: list,  word_guess: list, attemp: int, map_instance) -> None:
-    coded_word = []
+    coded_word = []#en este array se insertaran las letras con el color correspondiente
     print(f"palabra a adivinar{word_guess}")
-    print(f"player input o aperon = {player_input}")
     for letter in range(len(word_guess)):
       if player_input[letter] == word_guess[letter]:
         green = colored(player_input[letter],'green')
@@ -51,7 +52,7 @@ class Decripting():
     
     
     
-    
+  #clase con la que el jugado escoge  
 class PlayerElection():
     def __init__(self,player_input) -> None:
       self.player = player_input.split()
@@ -68,17 +69,17 @@ class CpuElection():
     print("estoy usando metodo brute")
     index = random.randint(0,len(palabras) -1)
     self.cpu = list(palabras[index])
-    palabras.pop(index)
+    palabras.pop(index)#se elimina la palabra que se uso en el indice
     return self.cpu
     
-  def cpu_random(self):
+  def cpu_random(self):#metodo random 
     print("estoy usando meodo random")
     self.cpu = [chr(random.randint(ord('a'),ord('z'))) for _ in range(6)]
     return self.cpu
   
   def cpu_algorithm(self,word_guess,attemp,):
     print("usando el metodo algoritmo")
-    self.index = random.choice([0,1,2,3,4,5])
+    #aperon seria la palabra llave 
     self.cpu  = ['a','p','e','r','o','n']
     
     
@@ -88,8 +89,10 @@ class CpuElection():
       return self.cpu
     
     if attemp > 0:
+      #se le asigna el valor del ultimo elemento conocido del feedback
       previous_feedback = self.feedback_grid[attemp-1]
       for i in range(len(word_guess)):
+        #se agregan o eliminan elementos a correct positions
         if previous_feedback[i] == colored(word_guess[i],'green'):
           self.correct_positions[i] = word_guess[i]
           self.letters_in_word.add(word_guess[i])
@@ -105,7 +108,7 @@ class CpuElection():
         new_guess[i] = self.correct_positions[i]
       elif new_guess[i] in self.letters_in_word:
         for j in range(len(word_guess)):
-          if new_guess[j] is None and new_guess[j] != word_guess[j]:
+          if new_guess[j] != word_guess[j]:
             new_guess[j] = new_guess[i]
             break
           
